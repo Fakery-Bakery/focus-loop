@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useRef, useEffect } from 'react';
 import { createTaskTimer, TimerControls, TimerState } from '@focus-loop/core-timers';
 import { TimerDisplay } from './TimerDisplay';
