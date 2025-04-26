@@ -6,8 +6,8 @@
 | 1 | Apr 28 | Sprint 0 Kick‑off | ✅ Repo bootstrap, initialise Next.js, bun, Tailwind; create CI workflow; stub service worker | o3 |
 | 2 | Apr 29 |  | ✅ Draft `core-timers` API, write unit tests (red) | Claude 3.7 |
 | 3 | Apr 30 |  | ✅ Task Timer (F‑01) implementation completed with 90.51% test coverage | Claude 3.7 |
-| 4 | May 1 |  | Implement Pause Timer randomiser (F‑02) + tests | Claude 3.7 |
-| 5 | May 2 |  | Implement Break Timer (F‑03) + tests | Claude 3.7 |
+| 4 | May 1 |  | ✅ Pause Timer randomiser (F‑02) implementation completed with tests for random ranges | Claude 3.7 |
+| 5 | May 2 |  | ✅ Break Timer (F‑03) implementation completed with tests | Claude 3.7 |
 | 6 | May 3 |  | Build Timer UI components; integrate with logic | Claude 3.7 |
 | 7 | May 4 |  | MVP styling pass; shadcn/ui integration; responsive tweaks | Claude 3.7 |
 | 8 | May 5 |  | Add Pause/Resume (F‑04); e2e happy‑path Cypress test | Claude 3.7 |
