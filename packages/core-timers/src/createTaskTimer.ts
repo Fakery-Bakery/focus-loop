@@ -4,33 +4,113 @@ import { TimerConfig, TimerControls, TimerState } from './types';
  * Creates a task timer with the specified configuration
  */
 export function createTaskTimer(config: TimerConfig): TimerControls {
-  // This is just a stub - will implement in next phase
-  // We're writing tests first (red phase)
+  // Validate config
+  if (config.duration <= 0) {
+    throw new Error('Timer duration must be greater than zero');
+  }
+
+  let state: TimerState = 'IDLE';
+  let remainingTime = config.duration;
+  let startTime: number | null = null;
+  let pausedAt: number | null = null;
+  let timerId: ReturnType<typeof setInterval> | null = null;
   
+  const clearTimerInterval = () => {
+    if (timerId !== null) {
+      clearInterval(timerId);
+      timerId = null;
+    }
+  };
+
+  const startInterval = () => {
+    // Only start if not already running
+    if (timerId !== null) return;
+    
+    const intervalId = setInterval(() => {
+      const now = Date.now();
+      const elapsed = Math.floor((now - (startTime as number)) / 1000);
+      remainingTime = Math.max(0, config.duration - elapsed);
+      
+      // Call tick callback if provided
+      config.onTick?.(remainingTime);
+      
+      // Check if timer has completed
+      if (remainingTime <= 0) {
+        clearTimerInterval();
+        state = 'COMPLETED';
+        config.onComplete?.();
+      }
+    }, 1000);
+    
+    timerId = intervalId;
+  };
+
   return {
     start: () => {
-      throw new Error('Not implemented');
+      if (state !== 'IDLE') {
+        return; // Only start from IDLE state
+      }
+      
+      state = 'RUNNING';
+      startTime = Date.now();
+      remainingTime = config.duration;
+      startInterval();
     },
+    
     pause: () => {
-      throw new Error('Not implemented');
+      if (state !== 'RUNNING') {
+        return; // Can only pause if running
+      }
+      
+      clearTimerInterval();
+      state = 'PAUSED';
+      pausedAt = Date.now();
     },
+    
     resume: () => {
-      throw new Error('Not implemented');
+      if (state !== 'PAUSED') {
+        return; // Can only resume if paused
+      }
+      
+      // Adjust startTime to account for the pause duration
+      if (startTime !== null && pausedAt !== null) {
+        const pauseDuration = Date.now() - pausedAt;
+        startTime = startTime + pauseDuration;
+        pausedAt = null;
+      }
+      
+      state = 'RUNNING';
+      startInterval();
     },
+    
     reset: () => {
-      throw new Error('Not implemented');
+      clearTimerInterval();
+      state = 'IDLE';
+      remainingTime = config.duration;
+      startTime = null;
+      pausedAt = null;
     },
-    getState: (): TimerState => {
-      return 'IDLE';
-    },
-    getRemaining: () => {
-      return config.duration;
-    },
+    
+    getState: () => state,
+    
+    getRemaining: () => remainingTime,
+    
     getElapsed: () => {
-      return 0;
+      if (startTime === null) return 0;
+      
+      if (state === 'PAUSED' && pausedAt !== null) {
+        // If paused, calculate elapsed time up to the pause point
+        return Math.min(config.duration, Math.floor((pausedAt - startTime) / 1000));
+      }
+      
+      if (state === 'COMPLETED') {
+        return config.duration;
+      }
+      
+      // If running, calculate current elapsed time
+      return Math.min(config.duration, Math.floor((Date.now() - startTime) / 1000));
     },
-    getDuration: () => {
-      return config.duration;
-    }
+    
+    getDuration: () => config.duration
   };
 } 

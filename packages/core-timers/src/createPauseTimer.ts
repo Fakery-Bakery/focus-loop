@@ -1,39 +1,33 @@
-import { TimerControls, TimerState, RandomPauseConfig } from './types';
+import { TimerControls, TimerState, RandomPauseConfig, TimerConfig } from './types';
+import { createTaskTimer } from './createTaskTimer';
 
 /**
  * Creates a pause timer with randomized duration within the specified range
  */
 export function createPauseTimer(config: RandomPauseConfig): TimerControls {
-  // This is just a stub - will implement in next phase
-  // We're writing tests first (red phase)
+  // Validate config
+  if (config.minDuration <= 0) {
+    throw new Error('Minimum duration must be greater than zero');
+  }
+  
+  if (config.maxDuration <= config.minDuration) {
+    throw new Error('Maximum duration must be greater than minimum duration');
+  }
   
   // Generate a random duration between min and max
-  const duration = 0; // Will implement random generation later
+  const randomFactor = Math.random();
+  const randomDuration = Math.round(
+    config.minDuration + (randomFactor * (config.maxDuration - config.minDuration))
+  );
   
-  return {
-    start: () => {
-      throw new Error('Not implemented');
-    },
-    pause: () => {
-      throw new Error('Not implemented');
-    },
-    resume: () => {
-      throw new Error('Not implemented');
-    },
-    reset: () => {
-      throw new Error('Not implemented');
-    },
-    getState: (): TimerState => {
-      return 'IDLE';
-    },
-    getRemaining: () => {
-      return duration;
-    },
-    getElapsed: () => {
-      return 0;
-    },
-    getDuration: () => {
-      return duration;
-    }
+  // Create a standard timer with the random duration
+  const timerConfig: TimerConfig = {
+    duration: randomDuration,
+    type: 'PAUSE',
+    onComplete: (config as any).onComplete,
+    onTick: (config as any).onTick
   };
+  
+  // Delegate to the task timer implementation
+  return createTaskTimer(timerConfig);
 } 
