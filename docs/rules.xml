@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Focus‑Loop Rulebook – regenerate 26 Apr 2025 by OpenAI o3 -->
+<rules version="1.1">
+
+  <!-- =====================
+       Documentation Policy
+       ===================== -->
+  <documentation>
+    <master-file>mastersolutiondesign.md</master-file>
+    <rule>Every feature has its own markdown file: &lt;feature&gt;.md (all lowercase)</rule>
+    <rule>Project timeline stored in projectplan.md (markdown)</rule>
+    <rule>All recurring problems tracked in issues.md (markdown)</rule>
+    <rule>Rulebook stored here as XML: rules.xml</rule>
+    <update-policy>Whenever code changes, update the corresponding feature doc *and* log the change (who + AI model + date).</update-policy>
+  </documentation>
+
+  <!-- =====================
+       Development Process
+       ===================== -->
+  <process model="FDD+TDD">
+    <branching>feature/F-xx-slug</branching>
+    <pre-update-step>Create failing test (red)</pre-update-step>
+    <implementation-step>Code change to pass test (green)</implementation-step>
+    <post-update-step>Refactor & commit with Conventional Commits</post-update-step>
+    <ci>GitHub Actions → lint, test, build (front‑end, back‑end, integration) before merge</ci>
+    <coverage min="80%"/>
+  </process>
+
+  <!-- ===============
+       Error Handling
+       =============== -->
+  <error-handling>
+    <recurring-problem log="issues.md"/>
+    <unknown>AI must state limitation or uncertainty explicitly</unknown>
+    <limitation>Any system limitation must be disclosed to stakeholder</limitation>
+  </error-handling>
+
+  <!-- ====================================
+       Post‑Mortem & Debugging Templates
+       ==================================== -->
+  <post-mortem>
+    <section>Incident Summary</section>
+    <section>Impact</section>
+    <section>Timeline of Events</section>
+    <section>Root Cause Analysis</section>
+    <section>Resolution</section>
+    <section>Preventive Measures</section>
+  </post-mortem>
+
+  <debugging-assistant>
+    <step>Problem Definition</step>
+    <step>Scope &amp; Details</step>
+    <step>Possible Causes</step>
+    <step>Diagnostic Steps</step>
+    <step>Analysis</step>
+    <step>Solution</step>
+    <step>Verification</step>
+    <summary>Root cause + recommended fix</summary>
+  </debugging-assistant>
+
+  <!-- ===================
+       Feature Isolation
+       =================== -->
+  <isolation>
+    <principle>Each feature implemented in separate files/packages to ease updates</principle>
+  </isolation>
+
+  <!-- ============
+       Misc Config
+       ============ -->
+  <notifications allow="true"/>
+  <pwa offline="true" supported-browsers="modern"/>
+  <license type="MIT"/>
+  <security>
+    <jwt>Store in secure HTTP-only cookie</jwt>
+    <data>Only task notes &amp; focus; no sensitive PII</data>
+  </security>
+  <ui theme="dark" font="rounded"/>
+
+  <!-- ==========
+       AI Roles
+       ========== -->
+  <ai-handoff architect="OpenAI o3" developer="Claude 3.7" auditor="o4‑mini"/>
+
+</rules>
