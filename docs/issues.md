@@ -1,23 +1,22 @@
 # Issues & Risk Log – Focus‑Loop PWA
-*Created 26 Apr 2025 by OpenAI o3*
+*Created 26 Apr 2025 by OpenAI o3*
 
 ---
 
-## 1 Open Issues
+## 1 Open Issues
 | ID | Date | Title | Description | Severity | Owner | Status |
 |----|------|-------|-------------|----------|-------|--------|
+| 1 | 2025-07-10 | Module not found: Can't resolve '@focus-loop/core-timers' | Next.js cannot resolve the '@focus-loop/core-timers' workspace package, causing a build failure. | H | Frontend | Open |
 
-_(none yet)_
-
-## 2 In Progress
-| ID | Date | Title | Notes | Target Fix |
+## 2 In Progress
+| ID | Date | Title | Notes | Target Fix |
 |----|------|-------|-------|-----------|
 
-## 3 Resolved / Closed
+## 3 Resolved / Closed
 | ID | Date | Title | Resolution |
 |----|------|-------|-----------|
 
-## 4 Known Risks & Mitigations
+## 4 Known Risks & Mitigations
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
 | Cloudflare Workers CPU limit for long AI calls | M | H | Offload to external API, stream back |

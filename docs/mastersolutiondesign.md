@@ -17,7 +17,7 @@ Ultimately it becomes a mindful productivity companion with optional audio guida
 |  F-01 | Create & start Task Timer        | P0       | ✅    |
 |  F-02 | Randomised Pause Timer range     | P0       | ✅    |
 |  F-03 | Break Timer with static duration | P0       | ✅    |
-|  F-04 | Pause/Resume all timers          | P0       | ✅    |
+|  F-04 | Pause/Resume all timers + UI     | P0       | ✅    |
 |  F-05 | Name Task & set Focus note       | P0       | ✅    |
 |  F-06 | End-of-task feedback prompt      | P1       | ➖    |
 |  F-07 | Sound effects for transitions    | P1       | ➖    |
@@ -39,8 +39,9 @@ Each feature will have its own markdown spec: `f-01-task-timer.md`, `f-02-pause-
 - **Framework:** **Next.js 14** with the `app/` router for file-based routing.
 - **Language:** TypeScript 5.x.
 - **State management:** React Context + *zustand* for lightweight stores.
-- **Styling:** Tailwind CSS (“dark” theme class) + shadcn/ui components.
+- **Styling:** Tailwind CSS ("dark" theme class) + shadcn/ui components.
 - **PWA:** next-pwa plugin → service-worker with precache / runtime caching for offline.
+- **UI Components:** Custom-built timer display and controls using React and Tailwind (implemented in F-04).
 
 ### 3.2 Backend / Edge
 
@@ -93,6 +94,12 @@ focus-loop/
   │         └─ …
   ├─ apps/
   │    └─ web/               ← Next.js app
+  │         └─ src/
+  │              ├─ components/
+  │              │    ├─ TimerDisplay.tsx     ← F-04 UI Components
+  │              │    ├─ TimerControls.tsx    ← F-04 UI Components
+  │              │    └─ TimerContainer.tsx   ← F-04 UI Components
+  │              └─ app/
   ├─ packages/
   │    ├─ core-timers/       ← business-logic library (pure TS)
   │    └─ ui-components/     ← shared UI kit (Tailwind)
@@ -206,4 +213,6 @@ while (taskRemaining > 0) {
 
 ---
 
-*End of Master Solution Design v0.1* 
+*End of Master Solution Design v0.1*
+
+*Last updated 3 May 2025 by Claude 3.7* 

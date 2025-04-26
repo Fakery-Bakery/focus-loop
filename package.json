@@ -1,0 +1,12 @@
+{
+  "name": "focus-loop",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "cd apps/web && npm run dev",
+    "test": "cd packages/core-timers && npm test"
+  }
+} 
