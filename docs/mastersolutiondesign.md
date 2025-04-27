@@ -82,7 +82,9 @@ If any of these choices prove unsuitable, update **issues.md** and prepare RFC.
 ```text
 focus-loop/
   ├─ .gitignore
-  ├─ README.md                ← short overview & setup
+  ├─ README.md
+  ├─ package.json
+  ├─ package-lock.json
   ├─ docs/
   │    ├─ mastersolutiondesign.md  ← **you are here**
   │    ├─ projectplan.md
@@ -91,20 +93,41 @@ focus-loop/
   │    └─ features/
   │         ├─ f-01-task-timer.md
   │         ├─ f-02-pause-timer.md
-  │         └─ …
+  │         ├─ f-03-break-timer.md
+  │         ├─ f-04-pause-resume.md
+  │         ├─ f-05-task-metadata.md
+  │         ├─ f-06-feedback-prompt.md
+  │         ├─ f-07-sound-effects.md
+  │         ├─ f-08-pause-visibility-toggle.md
+  │         ├─ f-09-presets.md
+  │         ├─ f-10-session-history.md
+  │         ├─ f-11-cloud-backup-auth.md
+  │         ├─ f-12-focus-ai-messages.md
+  │         ├─ f-13-guided-audio.md
+  │         └─ timer-ui.md
   ├─ apps/
-  │    └─ web/               ← Next.js app
+  │    └─ web/
+  │         ├─ .gitignore
+  │         ├─ package.json
+  │         ├─ package-lock.json
+  │         ├─ tsconfig.json
+  │         ├─ next.config.ts
+  │         ├─ vitest.config.ts
+  │         ├─ vitest.setup.ts
+  │         ├─ eslint.config.mjs
+  │         ├─ next-env.d.ts
+  │         ├─ public/
   │         └─ src/
-  │              ├─ components/
-  │              │    ├─ TimerDisplay.tsx     ← F-04 UI Components
-  │              │    ├─ TimerControls.tsx    ← F-04 UI Components
-  │              │    └─ TimerContainer.tsx   ← F-04 UI Components
-  │              └─ app/
+  │              ├─ app/
+  │              └─ components/
+  │                   ├─ TimerDisplay.tsx
+  │                   ├─ TimerControls.tsx
+  │                   └─ TimerContainer.tsx
   ├─ packages/
-  │    ├─ core-timers/       ← business-logic library (pure TS)
-  │    └─ ui-components/     ← shared UI kit (Tailwind)
-  ├─ cf-workers/             ← Cloudflare entrypoint
-  └─ tests/                  ← e2e specs
+  │    ├─ core-timers/
+  │    └─ ui-components/
+  ├─ cf-workers/
+  └─ tests/
 ```
 
 ## 5 Coding Conventions

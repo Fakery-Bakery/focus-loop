@@ -28,8 +28,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
   secondsRemaining = 0 
 }) => {
   const formattedTime = formatTime(secondsRemaining);
-  const minutesPart = formattedTime.split(':')[0];
-  const secondsPart = formattedTime.split(':')[1];
+  const [minutes, seconds] = formattedTime.split(':');
   
   return (
     <div 
@@ -37,7 +36,7 @@ export const TimerDisplay: React.FC<TimerDisplayProps> = ({
       role="timer"
       aria-live="polite"
       aria-atomic="true"
-      aria-label={`${minutesPart} minutes and ${secondsPart} seconds remaining`}
+      aria-label={`${minutes} minutes and ${seconds} seconds remaining`}
     >
       {formattedTime}
     </div>

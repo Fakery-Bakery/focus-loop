@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { createTaskTimer, TimerControls, TimerState } from '@focus-loop/core-timers';
+import { createTaskTimer, TimerState } from '@focus-loop/core-timers';
 import { TimerDisplay } from './TimerDisplay';
-import { TimerControls as UITimerControls } from './TimerControls';
+import { TimerControls } from './TimerControls';
 
 interface TimerContainerProps {
   /**
@@ -43,7 +43,7 @@ export const TimerContainer: React.FC<TimerContainerProps> = ({
   const [timerState, setTimerState] = useState<TimerState>('IDLE');
   
   // Ref to hold timer instance
-  const timerRef = useRef<TimerControls | null>(null);
+  const timerRef = useRef<any | null>(null);
   
   // Reset timer if duration changes
   useEffect(() => {
@@ -100,48 +100,43 @@ export const TimerContainer: React.FC<TimerContainerProps> = ({
     setRemaining(initialDuration);
     setTimerState('IDLE');
   };
-
-  // Determine status text based on timer state
+  
+  const handleSkip = () => {
+    if (timerRef.current) {
+      timerRef.current.reset();
+    }
+    setRemaining(0);
+    setTimerState('COMPLETED');
+    onComplete?.();
+  };
+  
   const getStatusText = (): string => {
     switch (timerState) {
       case 'IDLE':
         return 'Ready to start';
       case 'RUNNING':
-        return 'Timer running';
+        return 'Focusing...';
       case 'PAUSED':
-        return 'Timer paused';
+        return 'Paused';
       case 'COMPLETED':
-        return 'Timer completed';
+        return 'Completed';
       default:
         return '';
     }
   };
   
   return (
-    <div 
-      className={`flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg ${className}`}
-      role="region"
-      aria-label={title}
-    >
-      <h2 className="text-xl font-bold text-white mb-4">{title}</h2>
-      
-      <div className="mb-2">
-        <span 
-          className="text-sm text-gray-300"
-          aria-live="polite"
-        >
-          {getStatusText()}
-        </span>
-      </div>
-      
+    <div className={`p-4 rounded-lg shadow-lg ${className}`}>
+      <h2 className="text-xl font-bold text-center mb-4">{title}</h2>
       <TimerDisplay secondsRemaining={remaining} />
-      
-      <UITimerControls
+      <p className="text-center text-gray-600 mt-2">{getStatusText()}</p>
+      <TimerControls
         timerState={timerState}
         onStart={handleStart}
         onPause={handlePause}
         onResume={handleResume}
         onReset={handleReset}
+        onSkip={handleSkip}
       />
     </div>
   );

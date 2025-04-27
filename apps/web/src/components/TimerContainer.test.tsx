@@ -125,6 +125,7 @@ describe('TimerContainer', () => {
     expect(screen.queryByRole('button', { name: /start/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /pause/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /skip/i })).not.toBeInTheDocument();
   });
 
   it('resets to initial duration when reset is clicked', () => {
@@ -177,6 +178,7 @@ describe('TimerContainer', () => {
     rerender(<TimerContainer initialDuration={60} />);
     expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /skip/i })).toBeInTheDocument();
     
     // Pause -> Paused
     fireEvent.click(screen.getByRole('button', { name: /pause/i }));
@@ -187,6 +189,7 @@ describe('TimerContainer', () => {
     rerender(<TimerContainer initialDuration={60} />);
     expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /skip/i })).toBeInTheDocument();
     
     // Resume -> Running
     fireEvent.click(screen.getByRole('button', { name: /resume/i }));
@@ -203,5 +206,74 @@ describe('TimerContainer', () => {
     rerender(<TimerContainer initialDuration={60} />);
     expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /skip/i })).not.toBeInTheDocument();
+  });
+
+  it('skips to completion when skip button is clicked in RUNNING state', () => {
+    const onCompleteMock = vi.fn();
+    const { createTaskTimer } = require('@focus-loop/core-timers');
+    const mockTimer = createTaskTimer();
+    
+    const { rerender } = render(<TimerContainer initialDuration={60} onComplete={onCompleteMock} />);
+    
+    // Start the timer
+    fireEvent.click(screen.getByRole('button', { name: /start/i }));
+    
+    // Mock running state
+    mockTimer.getState.mockReturnValue('RUNNING');
+    rerender(<TimerContainer initialDuration={60} onComplete={onCompleteMock} />);
+    
+    // Check skip button is visible
+    expect(screen.getByRole('button', { name: /skip/i })).toBeInTheDocument();
+    
+    // Click skip button
+    fireEvent.click(screen.getByRole('button', { name: /skip/i }));
+    
+    // Timer should be in COMPLETED state
+    expect(onCompleteMock).toHaveBeenCalledTimes(1);
+    
+    // Display should show 00:00
+    expect(screen.getByText('00:00')).toBeInTheDocument();
+    
+    // Only reset button should be visible
+    expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /start/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /pause/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /skip/i })).not.toBeInTheDocument();
+  });
+
+  it('skips to completion when skip button is clicked in PAUSED state', () => {
+    const onCompleteMock = vi.fn();
+    const { createTaskTimer } = require('@focus-loop/core-timers');
+    const mockTimer = createTaskTimer();
+    
+    const { rerender } = render(<TimerContainer initialDuration={60} onComplete={onCompleteMock} />);
+    
+    // Start the timer
+    fireEvent.click(screen.getByRole('button', { name: /start/i }));
+    
+    // Mock paused state
+    mockTimer.getState.mockReturnValue('PAUSED');
+    rerender(<TimerContainer initialDuration={60} onComplete={onCompleteMock} />);
+    
+    // Check skip button is visible
+    expect(screen.getByRole('button', { name: /skip/i })).toBeInTheDocument();
+    
+    // Click skip button
+    fireEvent.click(screen.getByRole('button', { name: /skip/i }));
+    
+    // Timer should be in COMPLETED state
+    expect(onCompleteMock).toHaveBeenCalledTimes(1);
+    
+    // Display should show 00:00
+    expect(screen.getByText('00:00')).toBeInTheDocument();
+    
+    // Only reset button should be visible
+    expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /start/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /pause/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /skip/i })).not.toBeInTheDocument();
   });
 }); 

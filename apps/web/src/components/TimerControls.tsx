@@ -28,6 +28,11 @@ interface TimerControlsProps {
    * Callback for when the reset button is clicked
    */
   onReset: () => void;
+
+  /**
+   * Callback for when the skip button is clicked
+   */
+  onSkip?: () => void;
 }
 
 export const TimerControls: React.FC<TimerControlsProps> = ({
@@ -36,6 +41,7 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
   onPause,
   onResume,
   onReset,
+  onSkip,
 }) => {
   return (
     <div 
@@ -73,6 +79,17 @@ export const TimerControls: React.FC<TimerControlsProps> = ({
           aria-label="Resume timer"
         >
           Resume
+        </button>
+      )}
+      
+      {/* Skip button - shown in running and paused states, if onSkip is provided */}
+      {(timerState === 'RUNNING' || timerState === 'PAUSED') && onSkip && (
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+          onClick={onSkip}
+          aria-label="Skip timer"
+        >
+          Skip
         </button>
       )}
       

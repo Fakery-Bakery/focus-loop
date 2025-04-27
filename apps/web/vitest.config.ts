@@ -4,11 +4,11 @@ import path from 'path';
 export default defineConfig({
   resolve: {
     alias: {
-      '@focus-loop/core-timers': path.resolve(__dirname, '../../packages/core-timers/src'),
+      '@focus-loop/core-timers': path.resolve(__dirname, 'src/components/__mocks__/@focus-loop/core-timers.tsx'),
     },
   },
   css: {
-    postcss: false,
+    postcss: {},
   },
   test: {
     environment: 'jsdom',
