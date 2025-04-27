@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TimerDisplay } from './TimerDisplay';
+import { describe, it, expect } from 'vitest';
 
 describe('TimerDisplay', () => {
   it('renders 00:00 by default when no props provided', () => {
@@ -29,5 +30,15 @@ describe('TimerDisplay', () => {
     
     rerender(<TimerDisplay secondsRemaining={15} />);
     expect(screen.getByText('00:15')).toBeInTheDocument();
+  });
+  
+  it('includes proper accessibility attributes', () => {
+    render(<TimerDisplay secondsRemaining={125} />);
+    
+    const timerElement = screen.getByRole('timer');
+    expect(timerElement).toBeInTheDocument();
+    expect(timerElement).toHaveAttribute('aria-live', 'polite');
+    expect(timerElement).toHaveAttribute('aria-atomic', 'true');
+    expect(timerElement).toHaveAttribute('aria-label', '02 minutes and 05 seconds remaining');
   });
 }); 

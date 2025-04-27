@@ -215,4 +215,15 @@ while (taskRemaining > 0) {
 
 *End of Master Solution Design v0.1*
 
-*Last updated 3 May 2025 by Claude 3.7* 
+*Last updated 3 May 2025 by Claude 3.7*
+
+## UI Components
+
+### Timer UI Components (F-04)
+The timer UI components provide a complete interface for users to interact with the different timer types. These include:
+
+- **TimerDisplay**: Shows remaining time in MM:SS format
+- **TimerControls**: Provides Start/Pause/Resume/Reset buttons based on timer state
+- **TimerContainer**: Integrates the timer logic with the UI components
+
+*Updated on 4 May 2025 (Claude 3.7): Added accessibility features including ARIA attributes, semantic HTML, focus states, and keyboard navigation. Status information and title display were also added to improve the user experience.* 

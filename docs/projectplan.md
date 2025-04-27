@@ -9,10 +9,10 @@
 | 4 | May 1 |  | ✅ Pause Timer randomiser (F‑02) implementation completed with tests for random ranges | Claude 3.7 |
 | 5 | May 2 |  | ✅ Break Timer (F‑03) implementation completed with tests | Claude 3.7 |
 | 6 | May 3 |  | ✅ Build Timer UI components (F-04); integrate with core timer logic | Claude 3.7 |
-| 7 | May 4 |  | MVP styling pass; shadcn/ui integration; responsive tweaks | Claude 3.7 |
-| 8 | May 5 |  | Add Pause/Resume (F‑04); e2e happy‑path Cypress test | Claude 3.7 |
-| 9 | May 6 |  | Task Name & Focus note fields (F‑05); IndexedDB persistence | Claude 3.7 |
-| 10 | May 7 |  | Dashboard & session list | Claude 3.7 |
+| 7 | May 4 |  | ✅ Timer UI test coverage > 80% (F-05); extend with pause/resume/reset | Claude 3.7 |
+| 8 | May 5 |  | MVP styling pass; shadcn/ui integration; responsive tweaks | Claude 3.7 |
+| 9 | May 6 |  | Add Pause/Resume (F‑04); e2e happy‑path Cypress test | Claude 3.7 |
+| 10 | May 7 |  | Task Name & Focus note fields (F‑05); IndexedDB persistence | Claude 3.7 |
 | 11 | May 8 | Sprint 0 Hardening | Accessibility audit; offline test; PWA install banner | Claude 3.7 |
 | 12 | May 9 |  | Smoke test across browsers; bug triage into issues.md | o4‑mini |
 | 13 | May 10 | Release 0.1 | Tag v0.1; deploy preview; stakeholder demo | o3 |
@@ -23,9 +23,34 @@
 | 29‑35 | May 26‑Jun 1 | Sprint 3 | AI Focus messages (F‑12) & initial guided audio POC (F‑13) | Claude 3.7 |
 | 36 | Jun 2 | Release 1.0 | Full regression suite, performance budget, App Store PWA listing guide | o3 |
 
+## Monorepo Configuration Requirements
+
+When adding new workspace packages to the monorepo, the following configuration updates are **required**:
+
+1. **TypeScript Path Mapping**:
+   - Update root `tsconfig.json` with new path mapping
+   - Update `apps/web/tsconfig.json` with the same path mapping
+   - Ensure consistent module system (ESM) across all packages
+
+2. **Next.js Module Resolution**:
+   - Add to `transpilePackages` array in `next.config.ts`
+   - Add webpack alias in `next.config.ts`
+   - Configure proper exports in package.json
+
+3. **Vitest Test Configuration**:
+   - Add alias to `vitest.config.ts`
+   - Ensure test files use correct import extensions (.js)
+   - Maintain consistent method naming between implementation and tests
+
+4. **CI Validation**:
+   - Add a CI step that validates dev server startup and tests
+   - Run tests in both development and production modes
+
+Failure to update these configurations will result in module resolution errors during build or test time.
+
 > **Notes:**
 > *Adjust dates if start slips; maintain 1‑week sprints post‑MVP.*
 > *Plan updates must follow documentation conventions: record date, author, and AI model.*
 
-*Last updated 3 May 2025 by Claude 3.7*
+*Last updated 27 Jul 2025 by Claude 3.7*
 

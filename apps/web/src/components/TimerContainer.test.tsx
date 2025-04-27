@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { TimerContainer } from './TimerContainer';
-import { vi } from 'vitest';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Mock the timer
 vi.mock('@focus-loop/core-timers', () => {
@@ -44,21 +44,20 @@ describe('TimerContainer', () => {
   });
 
   it('calls timer methods when controls are clicked', () => {
-    const { getByRole } = render(<TimerContainer initialDuration={60} />);
-    
-    // Get the imported mock
     const { createTaskTimer } = require('@focus-loop/core-timers');
     const mockTimer = createTaskTimer();
     
+    const { rerender } = render(<TimerContainer initialDuration={60} />);
+    
     // Click start button
-    fireEvent.click(getByRole('button', { name: /start/i }));
+    fireEvent.click(screen.getByRole('button', { name: /start/i }));
     expect(mockTimer.start).toHaveBeenCalledTimes(1);
     
     // Mock a running state
     mockTimer.getState.mockReturnValue('RUNNING');
     
     // Re-render to update the UI based on the new state
-    render(<TimerContainer initialDuration={60} />);
+    rerender(<TimerContainer initialDuration={60} />);
     
     // Click pause button
     fireEvent.click(screen.getByRole('button', { name: /pause/i }));
@@ -68,7 +67,7 @@ describe('TimerContainer', () => {
     mockTimer.getState.mockReturnValue('PAUSED');
     
     // Re-render to update the UI
-    render(<TimerContainer initialDuration={60} />);
+    rerender(<TimerContainer initialDuration={60} />);
     
     // Click resume button
     fireEvent.click(screen.getByRole('button', { name: /resume/i }));
@@ -100,5 +99,109 @@ describe('TimerContainer', () => {
     
     // Display should update to 00:30
     expect(screen.getByText('00:30')).toBeInTheDocument();
+  });
+
+  it('calls onComplete callback when timer finishes', () => {
+    const onCompleteMock = vi.fn();
+    const { createTaskTimer } = require('@focus-loop/core-timers');
+    const mockTimer = createTaskTimer();
+    
+    render(<TimerContainer initialDuration={60} onComplete={onCompleteMock} />);
+    
+    // Start the timer
+    fireEvent.click(screen.getByRole('button', { name: /start/i }));
+    
+    // Simulate timer completion
+    act(() => {
+      const createTimerCall = createTaskTimer.mock.calls[0][0];
+      createTimerCall.onComplete();
+    });
+    
+    // onComplete should be called
+    expect(onCompleteMock).toHaveBeenCalledTimes(1);
+    
+    // Timer should be in COMPLETED state (only reset button visible)
+    expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /start/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /pause/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /resume/i })).not.toBeInTheDocument();
+  });
+
+  it('resets to initial duration when reset is clicked', () => {
+    const { createTaskTimer } = require('@focus-loop/core-timers');
+    const mockTimer = createTaskTimer();
+    
+    render(<TimerContainer initialDuration={120} />);
+    
+    // Initial time should be 02:00
+    expect(screen.getByText('02:00')).toBeInTheDocument();
+    
+    // Start timer and mock a time update
+    fireEvent.click(screen.getByRole('button', { name: /start/i }));
+    
+    act(() => {
+      const createTimerCall = createTaskTimer.mock.calls[0][0];
+      createTimerCall.onTick(45); // 45 seconds remaining
+    });
+    
+    // Display should update to 00:45
+    expect(screen.getByText('00:45')).toBeInTheDocument();
+    
+    // Click reset button
+    fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+    
+    // Display should reset to initial duration (02:00)
+    expect(screen.getByText('02:00')).toBeInTheDocument();
+    
+    // Timer should be in IDLE state (start button visible)
+    expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
+  });
+
+  it('applies custom className to container', () => {
+    const { container } = render(<TimerContainer initialDuration={60} className="test-class" />);
+    expect(container.firstChild).toHaveClass('test-class');
+  });
+
+  it('handles state transitions correctly', () => {
+    const { createTaskTimer } = require('@focus-loop/core-timers');
+    const mockTimer = createTaskTimer();
+    
+    const { rerender } = render(<TimerContainer initialDuration={60} />);
+    
+    // Start -> Running
+    fireEvent.click(screen.getByRole('button', { name: /start/i }));
+    expect(mockTimer.start).toHaveBeenCalledTimes(1);
+    
+    // In running state, should have pause button
+    mockTimer.getState.mockReturnValue('RUNNING');
+    rerender(<TimerContainer initialDuration={60} />);
+    expect(screen.getByRole('button', { name: /pause/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    
+    // Pause -> Paused
+    fireEvent.click(screen.getByRole('button', { name: /pause/i }));
+    expect(mockTimer.pause).toHaveBeenCalledTimes(1);
+    
+    // In paused state, should have resume button
+    mockTimer.getState.mockReturnValue('PAUSED');
+    rerender(<TimerContainer initialDuration={60} />);
+    expect(screen.getByRole('button', { name: /resume/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
+    
+    // Resume -> Running
+    fireEvent.click(screen.getByRole('button', { name: /resume/i }));
+    expect(mockTimer.resume).toHaveBeenCalledTimes(1);
+    
+    // Reset -> Idle
+    mockTimer.getState.mockReturnValue('RUNNING');
+    rerender(<TimerContainer initialDuration={60} />);
+    fireEvent.click(screen.getByRole('button', { name: /reset/i }));
+    expect(mockTimer.reset).toHaveBeenCalledTimes(1);
+    
+    // In idle state after reset, should have start button
+    mockTimer.getState.mockReturnValue('IDLE');
+    rerender(<TimerContainer initialDuration={60} />);
+    expect(screen.getByRole('button', { name: /start/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /reset/i })).toBeInTheDocument();
   });
 }); 

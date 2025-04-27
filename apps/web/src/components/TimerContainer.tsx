@@ -21,6 +21,12 @@ interface TimerContainerProps {
    * Optional className for styling the container
    */
   className?: string;
+  
+  /**
+   * Optional title for the timer
+   * @default "Focus Timer"
+   */
+  title?: string;
 }
 
 /**
@@ -30,6 +36,7 @@ export const TimerContainer: React.FC<TimerContainerProps> = ({
   initialDuration = 60,
   onComplete,
   className = '',
+  title = 'Focus Timer'
 }) => {
   // State for time remaining and timer state
   const [remaining, setRemaining] = useState<number>(initialDuration);
@@ -93,9 +100,40 @@ export const TimerContainer: React.FC<TimerContainerProps> = ({
     setRemaining(initialDuration);
     setTimerState('IDLE');
   };
+
+  // Determine status text based on timer state
+  const getStatusText = (): string => {
+    switch (timerState) {
+      case 'IDLE':
+        return 'Ready to start';
+      case 'RUNNING':
+        return 'Timer running';
+      case 'PAUSED':
+        return 'Timer paused';
+      case 'COMPLETED':
+        return 'Timer completed';
+      default:
+        return '';
+    }
+  };
   
   return (
-    <div className={`flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg ${className}`}>
+    <div 
+      className={`flex flex-col items-center p-6 bg-gray-800 rounded-lg shadow-lg ${className}`}
+      role="region"
+      aria-label={title}
+    >
+      <h2 className="text-xl font-bold text-white mb-4">{title}</h2>
+      
+      <div className="mb-2">
+        <span 
+          className="text-sm text-gray-300"
+          aria-live="polite"
+        >
+          {getStatusText()}
+        </span>
+      </div>
+      
       <TimerDisplay secondsRemaining={remaining} />
       
       <UITimerControls

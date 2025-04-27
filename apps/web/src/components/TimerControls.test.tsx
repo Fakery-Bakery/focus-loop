@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { TimerControls } from './TimerControls';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('TimerControls', () => {
   const mockOnStart = vi.fn();
@@ -124,5 +125,25 @@ describe('TimerControls', () => {
     // Test Reset button (in any state)
     fireEvent.click(screen.getByRole('button', { name: /reset/i }));
     expect(mockOnReset).toHaveBeenCalledTimes(1);
+  });
+  
+  it('includes proper accessibility attributes', () => {
+    render(
+      <TimerControls 
+        timerState="IDLE"
+        onStart={mockOnStart}
+        onPause={mockOnPause}
+        onResume={mockOnResume}
+        onReset={mockOnReset}
+      />
+    );
+    
+    // Test container has role="group" and aria-label
+    const controlsGroup = screen.getByRole('group');
+    expect(controlsGroup).toHaveAttribute('aria-label', 'Timer controls');
+    
+    // Test buttons have aria labels
+    expect(screen.getByRole('button', { name: 'Start timer' })).toHaveAttribute('aria-label', 'Start timer');
+    expect(screen.getByRole('button', { name: 'Reset timer' })).toHaveAttribute('aria-label', 'Reset timer');
   });
 }); 

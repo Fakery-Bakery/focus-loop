@@ -27,9 +27,19 @@ export const formatTime = (seconds: number): string => {
 export const TimerDisplay: React.FC<TimerDisplayProps> = ({ 
   secondsRemaining = 0 
 }) => {
+  const formattedTime = formatTime(secondsRemaining);
+  const minutesPart = formattedTime.split(':')[0];
+  const secondsPart = formattedTime.split(':')[1];
+  
   return (
-    <div className="text-4xl font-mono font-bold text-center">
-      {formatTime(secondsRemaining)}
+    <div 
+      className="text-4xl font-mono font-bold text-center"
+      role="timer"
+      aria-live="polite"
+      aria-atomic="true"
+      aria-label={`${minutesPart} minutes and ${secondsPart} seconds remaining`}
+    >
+      {formattedTime}
     </div>
   );
 }; 
